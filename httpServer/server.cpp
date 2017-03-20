@@ -6,17 +6,17 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-//#include<winsock.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <arpa/inet.h>
 #include <sys/stat.h>
 
 #define PORT 9001
 #define QUEUE_MAX_COUNT 5
 #define BUFF_SIZE 1024
 
-#define SERVER_STRING "Server: hoohackhttpd/0.1.0\r\n"
+#define SERVER_STRING "Server: tianling-server\r\n"
 
 int main(int argc, char** argv)
 {
@@ -35,7 +35,12 @@ int main(int argc, char** argv)
 
     int hello_len = 0;
 
-    /* 创建一个socket */
+    /*
+     * 创建一个socket
+     * AF_INET ipv4协议
+     * SOCK_STREAM 字节流套接字
+     * 传输层协议类型：0-TCP 1-UDP 2-SCTP
+     * */
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
         perror("socket");
@@ -79,6 +84,10 @@ int main(int argc, char** argv)
         hello_len = recv(client_fd, recv_buf, BUFF_SIZE, 0);
 
         printf("receive %d\n", hello_len);
+        printf("client port: %d \n",client_addr.sin_port);//输出客户端端口
+
+        char* clientIp = inet_ntoa(client_addr.sin_addr);//输出客户端ip
+        printf("client ip: %s \n",clientIp);
 
         /* 发送响应给客户端 */
         sprintf(buf, "HTTP/1.0 200 OK\r\n");
