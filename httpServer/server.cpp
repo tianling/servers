@@ -83,7 +83,8 @@ int main(int argc, char** argv)
         /* 调用recv函数接收客户端发来的请求信息 */
         hello_len = recv(client_fd, recv_buf, BUFF_SIZE, 0);
 
-        printf("receive %d\n", hello_len);
+        printf("receive %d\n", hello_len);//输出客户端发送数据长度
+        printf("receive %s\n", recv_buf);//输出客户端发送数据内容
         printf("client port: %d \n",client_addr.sin_port);//输出客户端端口
 
         char* clientIp = inet_ntoa(client_addr.sin_addr);//输出客户端ip
@@ -92,12 +93,16 @@ int main(int argc, char** argv)
         /* 发送响应给客户端 */
         sprintf(buf, "HTTP/1.0 200 OK\r\n");
         send(client_fd, buf, strlen(buf), 0);
+
         strcpy(buf, SERVER_STRING);
         send(client_fd, buf, strlen(buf), 0);
+
         sprintf(buf, "Content-Type: text/html\r\n");
         send(client_fd, buf, strlen(buf), 0);
+
         strcpy(buf, "\r\n");
         send(client_fd, buf, strlen(buf), 0);
+
         sprintf(buf, "Hello World\r\n");
         send(client_fd, buf, strlen(buf), 0);
 
